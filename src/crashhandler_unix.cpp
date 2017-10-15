@@ -191,7 +191,7 @@ namespace g3 {
                char* real_name = abi::__cxa_demangle(mangled_name, 0, 0, &status);
                // if demangling is successful, output the demangled function name
                if (status == 0) {
-                  oss << "\n\tstack dump [" << idx << "]  " << messages[idx] << " : " << real_name << "+";
+                  oss << "\tstack dump [" << idx << "]  " << messages[idx] << " : " << real_name << "+";
                   oss << offset_begin << offset_end << std::endl;
                }// otherwise, output the mangled function name
                else {
