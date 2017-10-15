@@ -19,7 +19,6 @@
 #include <csignal>
 #include <cstring>
 #include <unistd.h>
-#include <execinfo.h>
 #include <cxxabi.h>
 #include <cstdlib>
 #include <sstream>
@@ -28,6 +27,12 @@
 #include <atomic>
 #include <map>
 #include <mutex>
+
+#ifdef __ANDROID__
+#include "execinfo_android.h"
+#else
+#include <execinfo.h>
+#endif
 
 // Linux/Clang, OSX/Clang, OSX/gcc
 #if (defined(__clang__) || defined(__APPLE__))
