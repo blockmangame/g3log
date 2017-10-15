@@ -8,20 +8,6 @@
 
 #pragma once
 #include "g3log/generated_definitions.hpp"
-
-// Users of Juce or other libraries might have a define DEBUG which clashes with
-// the DEBUG logging level for G3log. In that case they can instead use the define
-//  "CHANGE_G3LOG_DEBUG_TO_DBUG" and G3log's logging level DEBUG is changed to be DBUG
-#if (defined(CHANGE_G3LOG_DEBUG_TO_DBUG))
-#if (defined(DBUG))
-#error "DEBUG is already defined elsewhere which clashes with G3Log's log level DEBUG"
-#endif
-#else
-#if (defined(DEBUG))
-#error "DEBUG is already defined elsewhere which clashes with G3Log's log level DEBUG"
-#endif
-#endif
-
 #include <string>
 #include <algorithm>
 #include <map>
@@ -71,8 +57,8 @@ struct LEVELS {
 //
 // example: MyLoggingLevel.h
 // #pragma once
-//  const LEVELS MYINFO {WARNING.value +1, "MyInfoLevel"};
-//  const LEVELS MYFATAL {FATAL.value +1, "MyFatalLevel"};
+//  const LEVELS MYINFO {G3LOG_WARNING.value +1, "MyInfoLevel"};
+//  const LEVELS MYFATAL {G3LOG_FATAL.value +1, "MyFatalLevel"};
 //
 //  ... somewhere else when G3_DYNAMIC_LOGGING is enabled
 //  addLogLevel(MYINFO, true);
@@ -80,20 +66,22 @@ struct LEVELS {
 //
 //  ... another example, when G3_DYNAMIC_LOGGING is enabled
 //  'addLogLevel' is NOT required
-//  LOG(MYFATL) << "this will just work, and it will be counted as a FATAL event";
+//  LOG(MYFATL) << "this will just work, and it will be counted as a G3LOG_FATAL event";
 namespace g3 {
    static const int kDebugValue = 100;
    static const int kInfoValue = 300;
    static const int kWarningValue = 500;
+   static const int kErrorValue = 800;
    static const int kFatalValue = 1000;
    static const int kInternalFatalValue = 2000;
 } // g3
 
 
-const LEVELS G3LOG_DEBUG{g3::kDebugValue, {"DEBUG"}},
-   INFO {g3::kInfoValue, {"INFO"}},
-   WARNING {g3::kWarningValue, {"WARNING"}},
-   FATAL {g3::kFatalValue, {"FATAL"}};
+const LEVELS G3LOG_DEBUG{ g3::kDebugValue,{ "DEBUG" } },
+   G3LOG_INFO{ g3::kInfoValue,{ "INFO" } },
+   G3LOG_WARNING{ g3::kWarningValue,{ "WARNING" } },
+   G3LOG_ERROR{ g3::kErrorValue,{ "ERROR" } },
+   G3LOG_FATAL{ g3::kFatalValue,{ "FATAL" } };
 
 
 
@@ -104,7 +92,7 @@ namespace g3 {
       LEVELS level;
 
       // default operator needed for std::map compliance
-      LoggingLevel(): status(false), level(INFO) {};
+      LoggingLevel(): status(false), level(G3LOG_INFO) {};
       LoggingLevel(const LoggingLevel& lvl) : status(lvl.status), level(lvl.level) {}
       LoggingLevel(const LEVELS& lvl): status(true), level(lvl) {};
       LoggingLevel(const LEVELS& lvl, bool enabled): status(enabled), level(lvl) {};
@@ -149,7 +137,7 @@ namespace g3 {
 
       /// reset all default logging levels to enabled
       /// remove any added logging levels so that the only ones left are
-      ///  {DEBUG,INFO,WARNING,ERROR,FATAL}
+      ///  {G3LOG_DEBUG,G3LOG_INFO,G3LOG_WARNING,G3LOG_ERROR,G3LOG_FATAL}
       void reset();
    } // only_change_at_initialization
 
@@ -164,7 +152,7 @@ namespace g3 {
       void disable(LEVELS level);
       void enable(LEVELS level);
 
-      /// WARNING: This will also disable FATAL events from being logged
+      /// WARNING: This will also disable G3LOG_FATAL events from being logged
       void disableAll();
       void enableAll();
 

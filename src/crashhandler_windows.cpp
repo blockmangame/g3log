@@ -184,9 +184,9 @@ namespace g3 {
       }
 
 
-      // Triggered by g3log::LogWorker after receiving a FATAL trigger
-      // which is LOG(FATAL), CHECK(false) or a fatal signal our signalhandler caught.
-      // --- If LOG(FATAL) or CHECK(false) the signal_number will be SIGABRT
+      // Triggered by g3log::LogWorker after receiving a G3LOG_FATAL trigger
+      // which is LOG(G3LOG_FATAL), CHECK(false) or a fatal signal our signalhandler caught.
+      // --- If LOG(G3LOG_FATAL) or CHECK(false) the signal_number will be SIGABRT
       void exitWithDefaultSignalHandler(const LEVELS &level, g3::SignalType fatal_signal_id) {
 
          ReverseToOriginalFatalHandling();

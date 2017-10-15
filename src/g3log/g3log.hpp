@@ -66,7 +66,7 @@ namespace g3 {
     *
     * Set a function-hook before a fatal message will be sent to the logger
     * i.e. this is a great place to put a break point, either in your debugger
-    * or programatically to catch LOG(FATAL), CHECK(...) or an OS fatal event (exception or signal)
+    * or programatically to catch LOG(G3LOG_FATAL), CHECK(...) or an OS fatal event (exception or signal)
     * This will be reset to default (does nothing) at initializeLogging(...);
     *
     * Example usage:
@@ -111,7 +111,7 @@ namespace g3 {
       void pushMessageToLogger(LogMessagePtr log_entry);
 
 
-      // forwards a FATAL message to all sinks,. after which the g3logworker
+      // forwards a G3LOG_FATAL message to all sinks,. after which the g3logworker
       // will trigger crashhandler / g3::internal::exitWithDefaultSignalHandler
       //
       // By default the "fatalCall" will forward a Fatalessageptr to this function
@@ -189,14 +189,14 @@ namespace g3 {
 For flags, width, precision etc please see the above references.
 EXAMPLES:
 {
-   LOGF(INFO, "Characters: %c %c \n", 'a', 65);
-   LOGF(INFO, "Decimals: %d %ld\n", 1977, 650000L);      // printing long
-   LOGF(INFO, "Preceding with blanks: %10d \n", 1977);
-   LOGF(INFO, "Preceding with zeros: %010d \n", 1977);
-   LOGF(INFO, "Some different radixes: %d %x %o %#x %#o \n", 100, 100, 100, 100, 100);
-   LOGF(INFO, "floats: %4.2f %+.0e %E \n", 3.1416, 3.1416, 3.1416);
-   LOGF(INFO, "Width trick: %*d \n", 5, 10);
-   LOGF(INFO, "%s \n", "A string");
+   LOGF(G3LOG_INFO, "Characters: %c %c \n", 'a', 65);
+   LOGF(G3LOG_INFO, "Decimals: %d %ld\n", 1977, 650000L);      // printing long
+   LOGF(G3LOG_INFO, "Preceding with blanks: %10d \n", 1977);
+   LOGF(G3LOG_INFO, "Preceding with zeros: %010d \n", 1977);
+   LOGF(G3LOG_INFO, "Some different radixes: %d %x %o %#x %#o \n", 100, 100, 100, 100, 100);
+   LOGF(G3LOG_INFO, "floats: %4.2f %+.0e %E \n", 3.1416, 3.1416, 3.1416);
+   LOGF(G3LOG_INFO, "Width trick: %*d \n", 5, 10);
+   LOGF(G3LOG_INFO, "%s \n", "A string");
    return 0;
 }
 And here is possible output

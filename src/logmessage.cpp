@@ -63,7 +63,7 @@ namespace g3 {
    // helper for fatal LOG
    std::string fatalLogToString(const LogMessage& msg) {
       auto out = LogDetailsToString(msg);
-      static const std::string fatalExitReason = {"EXIT trigger caused by LOG(FATAL) entry: "};
+      static const std::string fatalExitReason = {"EXIT trigger caused by LOG(G3LOG_FATAL) entry: "};
       out.append("\n\t*******\t " + fatalExitReason + "\n\t" + '"' + msg.message() + '"');
       return out;
    }
@@ -93,7 +93,7 @@ namespace g3 {
          return fatalExceptionToString(*this);
       }
 
-      if (FATAL.value == _level.value) {
+      if (G3LOG_FATAL.value == _level.value) {
          return fatalLogToString(*this);
       }
 
