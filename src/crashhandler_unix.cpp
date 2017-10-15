@@ -53,6 +53,7 @@ namespace {
    };
 
    std::map<int, std::string> gSignals = kSignals;
+   std::map<int, struct sigaction> gDefaultHandlers;
 
 
    bool shouldDoExit() {
@@ -64,9 +65,14 @@ namespace {
    void restoreSignalHandler(int signal_number) {
 #if !(defined(DISABLE_FATAL_SIGNALHANDLING))
       struct sigaction action;
-      memset(&action, 0, sizeof (action)); //
-      sigemptyset(&action.sa_mask);
-      action.sa_handler = SIG_DFL; // take default action for the signal
+      auto handler_pair = gDefaultHandlers.find(signal_number);
+      if (handler_pair != gDefaultHandlers.end()) {
+         action = handler_pair->second;
+      } else {
+         memset(&action, 0, sizeof (action)); //
+         sigemptyset(&action.sa_mask);
+         action.sa_handler = SIG_DFL; // take default action for the signal
+      }
       sigaction(signal_number, &action, NULL);
 #endif
    }
@@ -114,9 +120,15 @@ namespace {
 
       // do it verbose style - install all signal actions
       for (const auto& sig_pair : gSignals) {
-         if (sigaction(sig_pair.first, &action, nullptr) < 0) {
+         struct sigaction defaultAction;
+         if (sigaction(sig_pair.first, &action, &defaultAction) < 0) {
             const std::string error = "sigaction - " + sig_pair.second;
             perror(error.c_str());
+         } else {
+            if (gDefaultHandlers.find(sig_pair.first) == gDefaultHandlers.end())
+            {
+               gDefaultHandlers[sig_pair.first] = defaultAction;
+            }
          }
       }
 #endif
