@@ -70,7 +70,8 @@ struct LogCapture {
       return _stream;
    }
 
-
+    typedef std::string AdditionInfo();
+    static void SetAdditionFatalInfo(AdditionInfo * cb);
 
    std::ostringstream _stream;
    std::string _stack_trace;

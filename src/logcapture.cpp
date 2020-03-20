@@ -32,6 +32,8 @@ void g3::only_change_at_initialization::setMaxMessageSize(size_t max_size) {
  }
 #endif /* G3_DYNAMIC_MAX_MESSAGE_SIZE */
 
+static LogCapture::AdditionInfo * _addition_fatal_info = nullptr;
+
 /** logCapture is a simple struct for capturing log/fatal entries. At destruction the
 * captured message is forwarded to background worker.
 * As a safety precaution: No memory allocated here will be moved into the background
@@ -61,6 +63,8 @@ LogCapture::LogCapture(const char *file, const int line, const char *function, c
    if (g3::internal::wasFatal(level)) {
       _stack_trace = std::string{"\n*******\tSTACKDUMP *******\n"};
       _stack_trace.append(g3::internal::stackdump(dump));
+       if (_addition_fatal_info)
+           _stack_trace.append(_addition_fatal_info());
    }
 }
 
@@ -106,4 +110,8 @@ void LogCapture::capturef(const char *printf_like_message, ...) {
    }
 }
 
+void LogCapture::SetAdditionFatalInfo(AdditionInfo cb)
+{
+    _addition_fatal_info = cb;
+}
 
